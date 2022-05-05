@@ -13,12 +13,9 @@ import { getShortestPath } from '../../services/route'
 
 const SearchRoute = () => {
  
-   const [data, setData] = useState([]);
-   const [source, SourceDestination] = useState([]);
-
-   const handleSelect = () => {
-
-   }
+   const [ data, setData ] = useState([]);
+   const [ source, setSource ] = useState(null);
+   const [ destination, setDestination ] = useState(null);
 
    // Get stations lookup from service
     useEffect(() => {
@@ -37,7 +34,7 @@ const SearchRoute = () => {
         fetchData();
       }, []);
 
-    const options =  data.map(item => ({
+    const options = data.map(item => ({
         value: item.Code,
         label: item.Name + ' - ' + item.Code
     }))
@@ -62,9 +59,15 @@ const SearchRoute = () => {
             <h1>MRT ROUTES</h1>
             <h3>Find the shortest route</h3> 
             <RouteSection>
-                <Dropdown onSelect={handleSelect()} options={options}></Dropdown>
-                <Dropdown onSelect={handleSelect()} options={options}></Dropdown>
-                <Button text={"Search"}/>
+                <Dropdown 
+                    onChange={(e) => {setSource(e.value)}} 
+                    options={options.filter(o => o.value !== destination)}>
+                </Dropdown>
+                <Dropdown 
+                    onChange={(e) => {setDestination(e.value)}} 
+                    options={options.filter(o=> o.value !== source)}>
+                </Dropdown>
+                <Button isSubmitting text={"Search"}/>
             </RouteSection>
             <RouteSection>
                 <DateTimePicker/>

@@ -1,13 +1,13 @@
 import styled from 'styled-components'
 
-const Button = ({text}) => {
+const Button = ({isSubmitting, text}) => {
 
   const handleClick = () => {
     
   }
 
   return (
-    <BaseButton onClick={()=>handleClick()}>{text}</BaseButton>
+    <BaseButton isSubmitting={isSubmitting} onClick={()=>handleClick()}>{text}</BaseButton>
   )
 }
 

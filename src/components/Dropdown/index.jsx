@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import Select from 'react-select'
 
-const Dropdown = ({options}) => {
+const Dropdown = ({options, ...props}) => {
     const [selectedOption, setSelectedOption] = useState(options[0]); 
 
     return (
@@ -13,6 +13,7 @@ const Dropdown = ({options}) => {
                 name="START"
                 onChange={setSelectedOption}
                 options={options}
+                {...props}
             />
         </StyledDropdown>
     );
