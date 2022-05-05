@@ -1,13 +1,8 @@
 import styled from 'styled-components'
 
-const Button = ({isSubmitting, text}) => {
-
-  const handleClick = () => {
-    
-  }
-
+const Button = ({text, ...props}) => {
   return (
-    <BaseButton isSubmitting={isSubmitting} onClick={()=>handleClick()}>{text}</BaseButton>
+    <BaseButton {...props}>{text}</BaseButton>
   )
 }
 

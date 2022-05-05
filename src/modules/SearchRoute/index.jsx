@@ -12,29 +12,30 @@ import { getStationsLookup } from '../../services/lookup'
 import { getShortestPath } from '../../services/route'
 
 const SearchRoute = () => {
- 
-   const [ data, setData ] = useState([]);
-   const [ source, setSource ] = useState(null);
-   const [ destination, setDestination ] = useState(null);
+
+    const [ destination, setDestination ] = useState(null)
+    const [ isSubmitting, setIsSubmitting ] = useState(false)
+    const [ lookups, setLookups ] = useState([])
+    const [ routes, setRoutes ] = useState([])
+    const [ source, setSource ] = useState(null)
 
    // Get stations lookup from service
     useEffect(() => {
       const fetchData = async () => {
         const result = await(getStationsLookup());
-        setData(result);
+        setLookups(result);
       };
       fetchData();
     }, []);
 
-    useEffect(() => {
-        const fetchData = async () => {
-          const result = await(getStationsLookup());
-          setData(result);
-        };
-        fetchData();
-      }, []);
+    // Get shortest path from service
+    const handleSubmit = async (e) => {
+        setIsSubmitting(true)
+        // const result = await(getShortestPath(source, destination));
+        // setRoutes(result);
+    }
 
-    const options = data.map(item => ({
+    const options = lookups.map(item => ({
         value: item.Code,
         label: item.Name + ' - ' + item.Code
     }))
@@ -65,9 +66,9 @@ const SearchRoute = () => {
                 </Dropdown>
                 <Dropdown 
                     onChange={(e) => {setDestination(e.value)}} 
-                    options={options.filter(o=> o.value !== source)}>
+                    options={options.filter(o => o.value !== source)}>
                 </Dropdown>
-                <Button isSubmitting text={"Search"}/>
+                <Button isSubmitting={isSubmitting} onClick={handleSubmit} text={"Search"}/>
             </RouteSection>
             <RouteSection>
                 <DateTimePicker/>

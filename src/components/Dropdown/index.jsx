@@ -10,7 +10,6 @@ const Dropdown = ({options, ...props}) => {
             <Select
                 defaultValue={selectedOption}
                 isSearchable={true}
-                name="START"
                 onChange={setSelectedOption}
                 options={options}
                 {...props}
