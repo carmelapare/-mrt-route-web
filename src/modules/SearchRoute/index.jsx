@@ -1,17 +1,46 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
+// Components
 import Button from '../../components/Button'
 import DateTimePicker from '../../components/DateTimePicker'
 import Dropdown from '../../components/Dropdown'
 import Text from '../../components/Text'
 
+// Services
+import { getStationsLookup } from '../../services/lookup'
+import { getShortestPath } from '../../services/route'
+
 const SearchRoute = () => {
-    const options = [
-        { value: 'chocolate', label: 'Chocolate' },
-        { value: 'strawberry', label: 'Strawberry' },
-        { value: 'vanilla', label: 'Vanilla' },
-    ];
+ 
+   const [data, setData] = useState([]);
+   const [source, SourceDestination] = useState([]);
+
+   const handleSelect = () => {
+
+   }
+
+   // Get stations lookup from service
+    useEffect(() => {
+      const fetchData = async () => {
+        const result = await(getStationsLookup());
+        setData(result);
+      };
+      fetchData();
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+          const result = await(getStationsLookup());
+          setData(result);
+        };
+        fetchData();
+      }, []);
+
+    const options =  data.map(item => ({
+        value: item.Code,
+        label: item.Name + ' - ' + item.Code
+    }))
 
     let result = {
         steps: 9,
@@ -29,35 +58,34 @@ const SearchRoute = () => {
     }
 
     return (
-            <StyledPage>
-                <h1>MRT ROUTES</h1>
-                <h3>Find the shortest route</h3> 
-                <RouteSection>
-                    <Dropdown options={options}></Dropdown>
-                    <Dropdown options={options}></Dropdown>
-                    <Button text={"Search"}/>
-                </RouteSection>
-                <RouteSection>
-                    <DateTimePicker/>
-                </RouteSection>
-                <ResultSection>
-                    <ResultRow>
-                        <Text subtext text={'STEPS: '}/> 
-                        <Text text={result.steps}/> 
-                    </ResultRow> 
-                    <ResultRow>
-                        <Text subtext text={'ROUTES: '}/> 
-                        <Text text={result ? result.routes.join(',') : 'None'} />
-                    </ResultRow> 
-                    <ResultRow>
-                        <Text subtext text={'INSTRUCTIONS: '}/> 
-                        {result.instructions.map((item,i) => 
-                            <Text text={item}/>  
-                        )}
-                    </ResultRow>
-                </ResultSection>
-            </StyledPage>
-       
+        <StyledPage>
+            <h1>MRT ROUTES</h1>
+            <h3>Find the shortest route</h3> 
+            <RouteSection>
+                <Dropdown onSelect={handleSelect()} options={options}></Dropdown>
+                <Dropdown onSelect={handleSelect()} options={options}></Dropdown>
+                <Button text={"Search"}/>
+            </RouteSection>
+            <RouteSection>
+                <DateTimePicker/>
+            </RouteSection>
+            <ResultSection>
+                <ResultRow>
+                    <Text subtext text={'STEPS: '}/> 
+                    <Text text={result.steps}/> 
+                </ResultRow> 
+                <ResultRow>
+                    <Text subtext text={'ROUTES: '}/> 
+                    <Text text={result ? result.routes.join(',') : 'None'} />
+                </ResultRow> 
+                <ResultRow>
+                    <Text subtext text={'INSTRUCTIONS: '}/> 
+                    {result.instructions.map((item,i) => 
+                        <Text key={i} text={item}/>  
+                    )}
+                </ResultRow>
+            </ResultSection>
+        </StyledPage> 
     )
 }
 
