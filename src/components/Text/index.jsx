@@ -12,8 +12,8 @@ const Text = ({text, subtext}) => {
 }
 
 const StyledText = styled.div`
-  font-size: 18px;
-  margin-top: -20px;
+  font-size: 16px;
+  margin-top: -10px;
 `
 export default Text
 

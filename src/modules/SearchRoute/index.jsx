@@ -18,6 +18,7 @@ const SearchRoute = () => {
     const [ lookups, setLookups ] = useState([])
     const [ routes, setRoutes ] = useState([])
     const [ source, setSource ] = useState(null)
+    const [ schedule, setSchedule ] = useState(new Date())
 
    // Get stations lookup from service
     useEffect(() => {
@@ -29,31 +30,18 @@ const SearchRoute = () => {
     }, []);
 
     // Get shortest path from service
-    const handleSubmit = async (e) => {
+    const handleSubmit = async () => {
+        const result = await(getShortestPath(source, destination, schedule.toISOString("YYYY-MM-DDTHH:mm")))
+        if (result) {
+            setRoutes(result)
+        }
         setIsSubmitting(true)
-        // const result = await(getShortestPath(source, destination));
-        // setRoutes(result);
     }
 
     const options = lookups.map(item => ({
-        value: item.Code,
-        label: item.Name + ' - ' + item.Code
+        value: item.code,
+        label: `${item.name}(${item.code})`
     }))
-
-    let result = {
-        steps: 9,
-        routes: ['CC21', 'CC20', 'CC19', 'DT9', 'DT10', 'DT11', 'DT12', 'DT13', 'DT14'],
-        instructions : [
-            'Take CC line from Holland Village to Farrer Road',
-            'Take CC line from Farrer Road to Botanic Gardens',
-            'Change from CC line to DT line',
-            'Take DT line from Botanic Gardens to Stevens',
-            'Take DT line from Stevens to Newton',
-            'Take DT line from Newton to Little India',
-            'Take DT line from Little India to Rochor',
-            'Take DT line from Rochor to Bugis'
-        ]
-    }
 
     return (
         <StyledPage>
@@ -71,23 +59,28 @@ const SearchRoute = () => {
                 <Button isSubmitting={isSubmitting} onClick={handleSubmit} text={"Search"}/>
             </RouteSection>
             <RouteSection>
-                <DateTimePicker/>
+                <DateTimePicker onChange={(e) => setSchedule(e.value)} />
             </RouteSection>
             <ResultSection>
-                <ResultRow>
+                {routes.steps &&<ResultRow>
                     <Text subtext text={'STEPS: '}/> 
-                    <Text text={result.steps}/> 
-                </ResultRow> 
+                    <Text text={routes.steps} />
+                </ResultRow> }
+                {routes.travelTime && <ResultRow>
+                    <Text subtext text={'TRAVEL TIME: '}/> 
+                    <Text text={`${routes.travelTime} minutes`} />
+                </ResultRow> }
+                {routes.route && 
                 <ResultRow>
-                    <Text subtext text={'ROUTES: '}/> 
-                    <Text text={result ? result.routes.join(',') : 'None'} />
-                </ResultRow> 
-                <ResultRow>
+                    <Text subtext text={'ROUTES:  '}/> 
+                    <Text text={routes ? routes.route.join('-> ') : 'None'} />
+                </ResultRow> }
+                {routes.instructions && <ResultRow>
                     <Text subtext text={'INSTRUCTIONS: '}/> 
-                    {result.instructions.map((item,i) => 
+                    {routes.instructions.map((item,i) => 
                         <Text key={i} text={item}/>  
                     )}
-                </ResultRow>
+                </ResultRow> }
             </ResultSection>
         </StyledPage> 
     )
@@ -104,7 +97,7 @@ const StyledPage = styled.div`
 const RouteSection = styled.div`
     display: flex;
     justify-content: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     width: 100%;
 `
 const ResultSection = styled.div`
@@ -112,7 +105,7 @@ const ResultSection = styled.div`
     width: 55%;
 `
 const ResultRow = styled.div`
-    padding-bottom: 10px;
+    padding-bottom: 2px;
 `
 
 export default SearchRoute
