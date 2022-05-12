@@ -11,3 +11,6 @@ yarn install
 
 yarn start
 
+## Assumption
+
+Source and destination stations are always different
